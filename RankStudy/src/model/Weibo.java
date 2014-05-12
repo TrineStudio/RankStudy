@@ -160,14 +160,27 @@ public class Weibo {
 		double[] indexes = getWeiboIndexes();
 		double factorResult = 1;
 		
+		double[] values = new double[]
+		{
+		    1.0f, 1.0f, 1.0f, 1.0f, 1.0f
+		};
+		
+		double indexSqrt = 0;
+
+		double valueSqrt = 0;
+		
 		for (int i = 0; i != indexes.length; i++) {
 			if (i == omit)
 				continue;
-			else
-				factorResult *= indexes[i];
+			else {
+				factorResult += indexes[i] * values[i];
+				indexSqrt += indexes[i] * indexes[i];
+				valueSqrt += values[i] * values[i];
+			}
 		}
 		
-		return factorResult;
+		
+		return Math.acos(factorResult / (Math.sqrt(indexSqrt) * Math.sqrt(valueSqrt)));
 	}
 	
 	public double[] getWeiboIndexes() {
