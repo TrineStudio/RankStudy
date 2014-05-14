@@ -111,6 +111,22 @@ public class UserNetwork extends BaseNetwork{
 		}
 	}
 	
+	public int getMultiFollowerCount(int id1, int id2) {
+		String url = GET_MULTI_FOLLOER_COUNT + "?id1=" + id1 + "&id2=" + id2;
+		
+		String result = sendGet(url);
+		
+		System.out.println("======================");
+		System.out.println(result);
+		
+		try {
+			return Integer.parseInt(result.substring(0, result.length() - 1));
+		} catch (Exception e) {
+			e.printStackTrace();
+			return 0;
+		}
+	}
+	
 	public List<Weibo> getUserAvailableWeibo(int id) {
 		String url = GET_USER_AVAILABLE_WEIBO + "?id=" + id;
 		
