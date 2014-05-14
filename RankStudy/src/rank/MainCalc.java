@@ -74,7 +74,7 @@ public class MainCalc {
                     user.setPageRankValue(userPageRanks.get(user.getName()));
 		    		weiboList.get(j).setPublisher(user);
 		    		
-		    		weiboList.get(j).setHomogeneity(new HomogeneityParser().calcHomogeneity(1, users.get(i).getFriendsCount(), user.getFriendsCount()));
+		    		weiboList.get(j).setHomogeneity(new HomogeneityParser().calcHomogeneity(new UserNetwork().getMultiFollowerCount(users.get(i).getId(), user.getId()), users.get(i).getFriendsCount(), user.getFriendsCount()));
 		    		
 		    		if (weiboList.get(j).isForwarded()) {
 		    			Weibo weibo = new WeiboNetwork().getWeiboForwardInfo(users.get(i).getId(), weiboList.get(j).getId());
