@@ -44,7 +44,7 @@ public class FileWriter {
 			writeContents[i] = user.getId() + "," + weibo.getPublisher().getId() + "," + weibo.getId() + "," + 
 					weibo.getCreatedAt() + "," + weibo.getSimilarity() + "," + weibo.getHomogeneity() + "," + 
 	 				weibo.getTimeDecay() + "," + weibo.getFamiliarity() + "," + weibo.getPopularity() + "," +
-					weibo.getPublisher().getPageRankValue() + ",";
+					weibo.getPublisher().getPageRankValue() + "," + weibo.getEdgeRankValue() + ",";
 			
 			for (int j = 0; j != FACTORS.length; j++) {
 				writeContents[i] += weibo.caluclateFactors(FACTORS[j]) + ",";
@@ -128,7 +128,7 @@ public class FileWriter {
 		int totalCount = weiboList.size();
 		
 		for (Weibo weibo: weiboList) {
-			int times = 1;
+			int times = 0;
 			
 			if (weibo.isCommented())
 				times += 1;

@@ -8,7 +8,7 @@ import network.WeiboNetwork;
 
 public class EdgeRankCalculator {
 	
-	public static int k = 2;
+	public static int k = 1;
 
 	public static double getEdgeRank(Weibo weibo){
 		List<User> users = new WeiboNetwork().getWeiboInteractionUsers(weibo.getId());

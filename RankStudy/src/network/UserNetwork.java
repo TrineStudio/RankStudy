@@ -109,7 +109,6 @@ public class UserNetwork extends BaseNetwork{
 		try {
 			return JSONParser.jsonToUser(new JSONObject(result));
 		} catch (Exception e) {
-			e.printStackTrace();
 			return null;
 		}
 	}

@@ -43,7 +43,6 @@ public class JSONParser implements JSONConstants {
 			
 			return new Weibo(id, uid, repostsCount, commentsCount, attitudesCount, content, createdAt, authorName, isCommented, isFollowed);
 		} catch (JSONException e) {
-			e.printStackTrace();
 			return null;
 		}
 		
