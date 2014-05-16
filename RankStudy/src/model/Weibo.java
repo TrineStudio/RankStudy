@@ -21,6 +21,8 @@ public class Weibo {
 	private double similarity;
 	private double timeDecay;
 	
+	private double edgeRankValue = 0;
+	
 	private double currentPositionValue = 0;
 	
 	private User publisher;
@@ -158,7 +160,7 @@ public class Weibo {
 
 	public double caluclateFactors(int omit) {
 		double[] indexes = getWeiboIndexes();
-		double factorResult = 1;
+		double factorResult = 0;
 		
 		double[] values = new double[]
 		{
@@ -178,7 +180,6 @@ public class Weibo {
 				valueSqrt += values[i] * values[i];
 			}
 		}
-		
 		
 		return Math.acos(factorResult / (Math.sqrt(indexSqrt) * Math.sqrt(valueSqrt)));
 	}
@@ -201,5 +202,13 @@ public class Weibo {
 
 	public void setCurrentPositionValue(double currentPositionValue) {
 		this.currentPositionValue = currentPositionValue;
+	}
+
+	public double getEdgeRankValue() {
+		return edgeRankValue;
+	}
+
+	public void setEdgeRankValue(double edgeRankValue) {
+		this.edgeRankValue = edgeRankValue;
 	}
 }

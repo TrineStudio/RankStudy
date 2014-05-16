@@ -16,6 +16,7 @@ import java.util.List;
 
 import model.User;
 import model.Weibo;
+import Comparator.WeiboComparatorViaEdgeRank;
 import Comparator.WeiboComparatorViaPageRank;
 import Comparator.WeiboComparatorViaSHTFP;
 
@@ -58,10 +59,19 @@ public class FileWriter {
 			i = weiboList.indexOf(realWeiboList.get(j));
 			writeContents[i] += realWeiboList.get(j).getCurrentPositionValue() + ",";
 		}
-            
+		
         Collections.sort(realWeiboList, new WeiboComparatorViaPageRank());
         
         double pageValuesViaPageRank = getRankValues(realWeiboList);
+
+		for (int j = 0; j != realWeiboList.size(); j++) {
+			i = weiboList.indexOf(realWeiboList.get(j));
+			writeContents[i] += realWeiboList.get(j).getCurrentPositionValue() + ",";
+		}
+		
+		Collections.sort(realWeiboList, new WeiboComparatorViaEdgeRank());
+		
+		double pageValuesViaEdgeRank = getRankValues(realWeiboList);
 
 		for (int j = 0; j != realWeiboList.size(); j++) {
 			i = weiboList.indexOf(realWeiboList.get(j));
@@ -90,11 +100,13 @@ public class FileWriter {
 		try {
 			writer = new PrintWriter(folderLocation + "/" + user.getName() + ".csv", "UTF-8");
 			
+			writer.println("UserId,SenderId,WeiboId,Time,Similarity,Homogeneity,TimeDecay,Familiarity,Popularity,PageRank Value,EdgeRank Value,SHTFP Value,SHTF value,SHTP Value,SHFP Value,STFP Value,HTFP Value,Time Position Value,PageRank Position Value,EdgeRank Position Value,SHTFP Position Value,SHTF Position Value,SHTP Position Value,SHFP Position Value,STFP Position Value,HTFP Position Value,has Commented,has reposted");
+			
 			for (int j = 0; j != writeContents.length; j++) {
 				writer.println(writeContents[j]);
 			}
 			
-			writer.write(",,,,,,,,,,,,,,,," + pageValuesViaTime + "," + pageValuesViaPageRank + ",");
+			writer.write(",,,,,,,,,,,,,,,,," + pageValuesViaTime + "," + pageValuesViaPageRank + "," + pageValuesViaEdgeRank + ",");
 			
 			for (int j = 0; j != pageValuesViaFactors.length; j++)
 				writer.write(pageValuesViaFactors[j] + ",");

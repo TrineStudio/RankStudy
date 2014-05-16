@@ -6,12 +6,13 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-import Util.FileWriter;
 import model.Keyword;
 import model.User;
 import model.Weibo;
 import network.UserNetwork;
 import network.WeiboNetwork;
+import Util.FileWriter;
+import factors.EdgeRankCalculator;
 import factors.FamiliarityParser;
 import factors.HomogeneityParser;
 import factors.PageRankCalculator;
@@ -27,7 +28,6 @@ public class MainCalc {
 	@SuppressWarnings("deprecation")
 	public static void main(String[] args) {
 		User rootUser = new UserNetwork().getRootUser();
-		
 		List<User> users = new UserNetwork().getUserFocus(rootUser.getId());
 		
 		Calendar calendar = Calendar.getInstance();
@@ -90,6 +90,8 @@ public class MainCalc {
 		    		
 		    		weiboList.get(j).setFamiliarity(new FamiliarityParser().calcFamiliarity(weiboList.get(j).isBiFollowing(), users.get(i).getFollowersCount(), user.getFollowersCount()));
 		    		weiboList.get(j).setTimeDecay(new TimeDecayParser().calcTimeDecay(weiboList.get(j).getCreatedAt()));
+		    		
+		    		EdgeRankCalculator.getEdgeRank(weiboList.get(j));
 		    		
 		    		Keyword keyword = userKeywords.get(user.getName());
 		    		

@@ -6,10 +6,14 @@ public class User {
 	private int followersCount;
 	private int biFollowersCount;
 	
+	private int interactionType;
+	private int weiboCount;
+
 	private double pageRankValue = 0;
 	
 	private String uid;
 	private String name;
+	private String interactionTime;
 	
 	public User(int id, int friendsCount, int followersCount,
 			int biFollowersCount, String uid, String name) {
@@ -65,5 +69,29 @@ public class User {
 
 	public void setPageRankValue(double pageRankValue) {
 		this.pageRankValue = pageRankValue;
+	}
+
+	public int getInteractionType() {
+		return interactionType;
+	}
+
+	public void setInteractionType(int interactionType) {
+		this.interactionType = interactionType;
+	}
+
+	public int getWeiboCount() {
+		return weiboCount;
+	}
+
+	public void setWeiboCount(int weiboCount) {
+		this.weiboCount = weiboCount;
+	}
+
+	public String getInteractionTime() {
+		return interactionTime;
+	}
+
+	public void setInteractionTime(String interactionTime) {
+		this.interactionTime = interactionTime;
 	}
 }

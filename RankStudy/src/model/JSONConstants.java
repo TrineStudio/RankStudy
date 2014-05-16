@@ -17,4 +17,7 @@ public interface JSONConstants {
 	public static final String IS_COMMENTED = "is_commented";
 	public static final String LENGTH = "length";
 	public static final String WORDS = "words";
+	public static final String WEIBO_COUNT = "weibo_count";
+	public static final String INTERACTION_TYPE = "interaction_type";
+	public static final String INTERACTION_TIME = "interaction_time";
 }

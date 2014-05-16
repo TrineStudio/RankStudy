@@ -58,7 +58,7 @@ public class UserNetwork extends BaseNetwork{
 	}
 	
 	public List<User> getUserFollowers(int id) {
-		String url = GET_WEIBO_COMMENTER + "?id=" + id;
+		String url = GET_USER_FOLLOWER + "?id=" + id;
 		
 		String result = sendGet(url);
 		
@@ -102,6 +102,9 @@ public class UserNetwork extends BaseNetwork{
 		String url = GET_USER_INFO + "?id=" + uid;
 		
 		String result = sendGet(url);
+		
+		if (result.length() == 0)
+			return null;
 		
 		try {
 			return JSONParser.jsonToUser(new JSONObject(result));

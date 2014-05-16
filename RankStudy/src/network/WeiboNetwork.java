@@ -1,8 +1,14 @@
 package network;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import model.JSONParser;
+import model.User;
 import model.Weibo;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public class WeiboNetwork extends BaseNetwork{
@@ -18,9 +24,20 @@ public class WeiboNetwork extends BaseNetwork{
 			try {
 				return JSONParser.jsonToWeibo(new JSONObject(result));
 			} catch (Exception e) {
-				e.printStackTrace();
 				return null;
 			}
+		}
+	}
+	
+	public List<User> getWeiboInteractionUsers(int weiboId) {
+		String url = GET_WEIBO_COMMENTER + "?id=" + weiboId;
+		String result = sendGet(url);
+		
+		try {
+			return JSONParser.arrayToUsers(new JSONArray(result));
+		} catch (JSONException e) {
+			e.printStackTrace();
+			return new ArrayList<User>();
 		}
 	}
 }

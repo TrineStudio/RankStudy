@@ -1,6 +1,9 @@
 package model;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.json.JSONArray;
@@ -64,6 +67,7 @@ public class JSONParser implements JSONConstants {
 		return weiboList;
 	}
 
+	@SuppressWarnings("deprecation")
 	public static User jsonToUser(JSONObject jsonObject) {
 
 		try {
@@ -75,11 +79,35 @@ public class JSONParser implements JSONConstants {
 			String name = jsonObject.getString(NAME);
 			String uid = jsonObject.getString(UID);
 			
-			return new User(id, friendsCount, followersCount, biFollowersCount, uid, name);
+			User user = new User(id, friendsCount, followersCount, biFollowersCount, uid, name);
+			
+			if (jsonObject.has(WEIBO_COUNT)) {
+				user.setWeiboCount(jsonObject.getInt(WEIBO_COUNT));
+				user.setInteractionTime(jsonObject.getString(INTERACTION_TIME));
+				user.setInteractionType(jsonObject.getInt(INTERACTION_TYPE));
+				
+				String time = user.getInteractionTime();
+				
+				if (time.contains("月")) {
+					int index = time.indexOf("年");
+					
+					if (index == -1) {
+						time = "2014年 " + time;
+					}
+
+					SimpleDateFormat format = new SimpleDateFormat("yyyy年 MM月dd日 HH:mm");
+					Date newTime = format.parse(time);
+					user.setInteractionTime(newTime.toGMTString());
+				}
+			}
+			
+			return user;
 
 		} catch (JSONException e) {
 			e.printStackTrace();
-		}
+        } catch (ParseException e) {
+                e.printStackTrace();
+        }
 		
 		return null;
 	}
