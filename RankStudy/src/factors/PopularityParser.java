@@ -36,10 +36,11 @@ public class PopularityParser {
 	}
 	
 	public double divideMax(int num, boolean isReposted){
+		
 		if (!isReposted)
-			return (double)num / MAXPOP;
+			return (double)Math.log10(num + 1) / Math.log10(MAXPOP);
 		else
-			return (double)num / (2 * MAXPOP);
+			return (double)Math.log10(num + 1) / Math.log10(2 * MAXPOP);
 	}
 	
 	public double sigmoid(int num){
