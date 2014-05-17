@@ -19,6 +19,7 @@ import model.Weibo;
 import Comparator.WeiboComparatorViaEdgeRank;
 import Comparator.WeiboComparatorViaPageRank;
 import Comparator.WeiboComparatorViaSHTFP;
+import Comparator.WeiboComparatorViaTime;
 
 public class FileWriter {
 	private static int[] FACTORS = new int[]
@@ -52,6 +53,8 @@ public class FileWriter {
 			
 			i++;
   		}
+		
+		Collections.sort(realWeiboList, new WeiboComparatorViaTime());
 
 		double pageValuesViaTime = getRankValues(realWeiboList);
 		
