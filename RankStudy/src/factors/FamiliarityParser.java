@@ -8,9 +8,9 @@ public class FamiliarityParser {
 	
 	public double calcFamiliarity(boolean bifriend, int friendCount, int bifriendCount){
 		if(bifriend){
-			return (double) 1 / bifriendCount;
+			return (double) 1 / Math.log(bifriendCount + 1);
 		}
 		else
-			return (double) 1 / friendCount;
+			return (double) 1 / Math.log(friendCount + 1);
 	}
 }
