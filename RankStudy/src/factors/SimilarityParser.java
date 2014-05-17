@@ -49,7 +49,7 @@ public class SimilarityParser {
 			return simNetwork.getSimilarity(listToString(keywords1), listToString(keywords2)) / 100;
 		else{
 			System.out.println("Cannot extract keywords");
-			return 0.0f;
+			return Double.MIN_VALUE;
 		}
 	}
 	
