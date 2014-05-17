@@ -57,7 +57,7 @@ public class WeiboComparatorViaSHTFP implements Comparator<Weibo>{
 	}
 
 	public double caluclateFactors(double[] indexes) {
-		double factorResult = 1;
+		double factorResult = 0;
 		
 		double[] values = new double[]
 		{

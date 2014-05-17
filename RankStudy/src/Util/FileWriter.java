@@ -87,6 +87,8 @@ public class FileWriter {
             for (int j = 0; j != realWeiboList.size(); j++) {
             	i = weiboList.indexOf(realWeiboList.get(j));
             	writeContents[i] += realWeiboList.get(j).getCurrentPositionValue() + ",";
+            	
+            	System.out.println("(i, j): " + i + ", " + j);
             }
         }
         

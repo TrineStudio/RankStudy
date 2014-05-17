@@ -17,4 +17,5 @@ public interface NetworkUrls {
 	public static final String GET_USER_KEYWORD = HOST + "getUserRecentWeiboKeywords.php";
 	public static final String GET_MULTI_FOLLOER_COUNT = HOST + "getMultiFollowersCount.php";
 	public static final String GET_USER_FOLLOWER = HOST + "getUserFollower.php";
+	public static final String GET_USER_HOMOGENEITY = HOST + "getUserHomogeneity.php";
 }

@@ -57,6 +57,14 @@ public class UserNetwork extends BaseNetwork{
 		return new ArrayList<User>();
 	}
 	
+	public double getUserHomogeneity(int readerId, int authorId) {
+		String url = GET_USER_HOMOGENEITY + "?reader_id=" + readerId + "&author_id=" + authorId;
+		
+		String result = sendGet(url);
+		
+		return Double.parseDouble(result);
+	}
+	
 	public List<User> getUserFollowers(int id) {
 		String url = GET_USER_FOLLOWER + "?id=" + id;
 		
@@ -109,6 +117,7 @@ public class UserNetwork extends BaseNetwork{
 		try {
 			return JSONParser.jsonToUser(new JSONObject(result));
 		} catch (Exception e) {
+			e.printStackTrace();
 			return null;
 		}
 	}
