@@ -1,5 +1,7 @@
 package model;
 
+import Comparator.WeiboComparatorViaSHTFP;
+
 public class Weibo {
 	private int id;
 	private int uid;
@@ -164,7 +166,11 @@ public class Weibo {
 		
 		double[] values = new double[]
 		{
-		    1.0f, 1.0f, 1.0f, 1.0f, 1.0f
+		    1.0f * WeiboComparatorViaSHTFP.SWEIGHT, 
+		    1.0f * WeiboComparatorViaSHTFP.TWEIGHT,
+		    1.0f * WeiboComparatorViaSHTFP.PWEIGHT,
+		    1.0f * WeiboComparatorViaSHTFP.HWEIGHT,
+		    1.0f * WeiboComparatorViaSHTFP.FWEIGHT
 		};
 		
 		double indexSqrt = 0;
@@ -187,11 +193,11 @@ public class Weibo {
 	public double[] getWeiboIndexes() {
 		double[] indexes = new double[5];
 		
-		indexes[0] = getSimilarity();
-		indexes[1] = getTimeDecay();
-		indexes[2] = getPopularity();
-		indexes[3] = getHomogeneity();
-		indexes[4] = getFamiliarity();
+		indexes[0] = getSimilarity() * WeiboComparatorViaSHTFP.SWEIGHT;
+		indexes[1] = getTimeDecay() * WeiboComparatorViaSHTFP.TWEIGHT;
+		indexes[2] = getPopularity() * WeiboComparatorViaSHTFP.PWEIGHT;
+		indexes[3] = getHomogeneity() * WeiboComparatorViaSHTFP.HWEIGHT;
+		indexes[4] = getFamiliarity() * WeiboComparatorViaSHTFP.FWEIGHT;
 		
 		return indexes;
 	}

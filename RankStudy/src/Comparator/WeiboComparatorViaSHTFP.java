@@ -13,6 +13,12 @@ public class WeiboComparatorViaSHTFP implements Comparator<Weibo>{
 	public static final int HOMOGENEITY = 3;
 	public static final int FAMILIARITY = 4;
 	
+	public static final int SWEIGHT = 1;
+	public static final int TWEIGHT = 3;
+	public static final int PWEIGHT = 3;
+	public static final int HWEIGHT = 3;
+	public static final int FWEIGHT = 2;
+	
 	private int omit;
 	
 
@@ -61,7 +67,7 @@ public class WeiboComparatorViaSHTFP implements Comparator<Weibo>{
 		
 		double[] values = new double[]
 		{
-		    1.0f, 1.0f, 1.0f, 1.0f, 1.0f
+		    1.0f * SWEIGHT, 1.0f * TWEIGHT, 1.0f * PWEIGHT, 1.0f * HWEIGHT, 1.0f * FWEIGHT
 		};
 		
 		double indexSqrt = 0;
@@ -85,11 +91,11 @@ public class WeiboComparatorViaSHTFP implements Comparator<Weibo>{
 	public double[] getWeiboIndexes(Weibo weibo) {
 		double[] indexes = new double[5];
 		
-		indexes[0] = weibo.getSimilarity();
-		indexes[1] = weibo.getTimeDecay();
-		indexes[2] = weibo.getPopularity();
-		indexes[3] = weibo.getHomogeneity();
-		indexes[4] = weibo.getFamiliarity();
+		indexes[0] = weibo.getSimilarity() * SWEIGHT;
+		indexes[1] = weibo.getTimeDecay() * TWEIGHT;
+		indexes[2] = weibo.getPopularity() * PWEIGHT;
+		indexes[3] = weibo.getHomogeneity() * HWEIGHT;
+		indexes[4] = weibo.getFamiliarity() * FWEIGHT;
 		
 		return indexes;
 	}
