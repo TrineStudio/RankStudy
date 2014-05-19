@@ -79,6 +79,20 @@ public class UserNetwork extends BaseNetwork{
 		}
 	}
 	
+	public void setUserTwitterRank(int id, double value) {
+		String url = SET_USER_TWITTER_RANK + "?id=" + id + "&value=" + value;
+		
+		sendGet(url);
+	}
+	
+	public double getUserTwitterRank(int id) {
+		String url = GET_USER_TWITTER_RANK + "?id=" + id;
+		
+		String result = sendGet(url);
+		
+		return Double.parseDouble(result);
+	}
+
 	public List<User> getUserFollowers(int id) {
 		String url = GET_USER_FOLLOWER + "?id=" + id;
 		

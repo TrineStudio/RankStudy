@@ -1,11 +1,6 @@
 package Util;
 
-import static Comparator.WeiboComparatorViaSHTFP.FAMILIARITY;
-import static Comparator.WeiboComparatorViaSHTFP.HOMOGENEITY;
-import static Comparator.WeiboComparatorViaSHTFP.NONE;
-import static Comparator.WeiboComparatorViaSHTFP.POPULARITY;
-import static Comparator.WeiboComparatorViaSHTFP.SIMILARITY;
-import static Comparator.WeiboComparatorViaSHTFP.TIME_DECAY;
+import static Comparator.WeiboComparatorViaSHTFP.*;
 
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
@@ -46,7 +41,10 @@ public class FileWriter {
 			writeContents[i] = user.getId() + "," + weibo.getPublisher().getId() + "," + weibo.getId() + "," + 
 					weibo.getCreatedAt() + "," + weibo.getSimilarity() + "," + weibo.getHomogeneity() + "," + 
 	 				weibo.getTimeDecay() + "," + weibo.getFamiliarity() + "," + weibo.getPopularity() + "," +
-					weibo.getPublisher().getPageRankValue() + "," + weibo.getEdgeRankValue() + "," + weibo.getPublisher().getTwitterRank() + ",";
+					weibo.getSimilarity() * SWEIGHT + "," + weibo.getHomogeneity() * HWEIGHT + "," + 
+	 				weibo.getTimeDecay() * TWEIGHT + "," + weibo.getFamiliarity() * FWEIGHT + "," + 
+					weibo.getPopularity() * PWEIGHT + "," + weibo.getPublisher().getPageRankValue() + "," + 
+	 				weibo.getEdgeRankValue() + "," + weibo.getPublisher().getTwitterRank() + ",";
 			
 			for (int j = 0; j != FACTORS.length; j++) {
 				writeContents[i] += weibo.caluclateFactors(FACTORS[j]) + ",";
@@ -115,7 +113,7 @@ public class FileWriter {
 		try {
 			writer = new PrintWriter(folderLocation + "/" + user.getName() + ".csv", "UTF-8");
 			
-			writer.println("UserId,SenderId,WeiboId,Time,Similarity,Homogeneity,TimeDecay,Familiarity,Popularity,PageRank Value,EdgeRank Value,Twitter Rank Value,SHTFP Value,SHTF value,SHTP Value,SHFP Value,STFP Value,HTFP Value,Time Position Value,PageRank Position Value,EdgeRank Position Value,Twitter Rank Position Value,SHTFP Position Value,SHTF Position Value,SHTP Position Value,SHFP Position Value,STFP Position Value,HTFP Position Value,has Commented,has reposted");
+			writer.println("UserId,SenderId,WeiboId,Time,Similarity,Homogeneity,TimeDecay,Familiarity,Popularity,Similarity * " + SWEIGHT + ",Homogeneity * " + HWEIGHT + ",TimeDecay * " + TWEIGHT + ",Familarity * " + FWEIGHT + ",Popularity * " + PWEIGHT + ",PageRank Value,EdgeRank Value,Twitter Rank Value,SHTFP Value,SHTF value,SHTP Value,SHFP Value,STFP Value,HTFP Value,Time Position Value,PageRank Position Value,EdgeRank Position Value,Twitter Rank Position Value,SHTFP Position Value,SHTF Position Value,SHTP Position Value,SHFP Position Value,STFP Position Value,HTFP Position Value,has Commented,has reposted");
 			
 			for (int j = 0; j != writeContents.length; j++) {
 				writer.println(writeContents[j]);
@@ -126,7 +124,7 @@ public class FileWriter {
 			for (int j = 0; j != pageValuesViaFactors.length; j++)
 				writer.write(pageValuesViaFactors[j] + ",");
 			
-			writer.println("Friends:" + user.getFollowersCount() + ", Followers: " + user.getFriendsCount() + ", Ratio: " + friendsFollowerRatio);
+			writer.println(user.getFollowersCount() + "," + user.getFriendsCount() + "," + friendsFollowerRatio);
 			
 			writer.close();
 		} catch (FileNotFoundException e) {

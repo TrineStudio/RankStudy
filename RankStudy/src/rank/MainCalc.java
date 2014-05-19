@@ -71,7 +71,14 @@ public class MainCalc {
 		    			
 		    			userPageRanks.put(user.getName(), pageRankValue);
 		    			userKeywords.put(user.getName(), keyword);
-		    			userTwitterRanks.put(user.getName(), new TwitterRankCalculator().getTwitterRank(user.getId()));
+
+		    			double tempValue;
+		    			 
+		    			if ((tempValue = new UserNetwork().getUserTwitterRank(user.getId())) == -1) {
+		    				userTwitterRanks.put(user.getName(), new TwitterRankCalculator().getTwitterRank(user.getId()));
+		    			}
+		    			else
+		    				userTwitterRanks.put(user.getName(),tempValue);
 		    		}
 
                     user.setPageRankValue(userPageRanks.get(user.getName()));

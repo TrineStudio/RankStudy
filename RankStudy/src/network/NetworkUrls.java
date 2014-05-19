@@ -19,4 +19,6 @@ public interface NetworkUrls {
 	public static final String GET_USER_FOLLOWER = HOST + "getUserFollower.php";
 	public static final String GET_USER_HOMOGENEITY = HOST + "getUserHomogeneity.php";
 	public static final String GET_USER_TWITTER_RANK_INFO = HOST + "getUserTwitterRankInfo.php";
+	public static final String GET_USER_TWITTER_RANK = HOST + "getUserTwitterRank.php";
+	public static final String SET_USER_TWITTER_RANK = HOST + "setUserTwitterRank.php";
 }

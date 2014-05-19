@@ -21,6 +21,8 @@ public class TwitterRankCalculator {
 			result += (double)rankInfo.getWeiboCount() / (double)rankInfo.getWeiboCounts() * new SimilarityParser(length).calcSimilarity(mainKeyword.getKeyWords(), rankInfo.getKeyword().getKeyWords());
 		}
 		
+		new UserNetwork().setUserTwitterRank(id, result);
+		
 		return result;
 	}
 }
