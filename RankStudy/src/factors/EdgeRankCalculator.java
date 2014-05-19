@@ -17,7 +17,7 @@ public class EdgeRankCalculator {
 		
 		for (int i = 0; i != users.size(); i++) {
 			User user = users.get(i);
-			value += user.getWeiboCount() * k / user.getFriendsCount() * user.getInteractionType() * new TimeDecayParser().calcTimeDecay(user.getInteractionTime());
+			value += (double)(user.getWeiboCount() * k) / (double)user.getFriendsCount() * (double)user.getInteractionType() * new TimeDecayParser().calcTimeDecay(user.getInteractionTime());
 		}
 		
 		weibo.setEdgeRankValue(value);

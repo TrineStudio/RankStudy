@@ -48,6 +48,39 @@ public class JSONParser implements JSONConstants {
 		
 	}
 	
+	public static TwitterRankInfo jsonToTwitterRankInfo(JSONObject json) {
+		try {
+			int count = json.getInt(COUNT);
+			int counts = json.getInt(COUNTS);
+			JSONObject keyWordJSON = json.getJSONObject(KEYWORD);
+			Keyword keyword = jsonToKeyword(keyWordJSON);
+			
+			return new TwitterRankInfo(count, keyword, counts);
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	public static List<TwitterRankInfo> arrayToTwitterRankInfo(JSONArray array) {
+		List<TwitterRankInfo> twitterRankInfoList = new ArrayList<TwitterRankInfo>();
+		
+		try {
+			for (int i = 0; i != array.length(); i++) {
+				TwitterRankInfo twitterRankInfo = jsonToTwitterRankInfo(array.getJSONObject(i));
+				
+				if (twitterRankInfo != null)
+					twitterRankInfoList.add(twitterRankInfo);
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return twitterRankInfoList;
+	}
+	
 	public static List<Weibo> arrayToWeiboList(JSONArray array) {
 		List<Weibo> weiboList = new ArrayList<Weibo>();
 		

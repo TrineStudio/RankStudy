@@ -8,7 +8,8 @@ public class User {
 	
 	private int interactionType;
 	private int weiboCount;
-
+	
+	private double twitterRank = 0;
 	private double pageRankValue = 0;
 	
 	private String uid;
@@ -33,6 +34,9 @@ public class User {
 		this.id = id;
 	}
 	public int getFriendsCount() {
+		if (friendsCount == 0)
+			return 1;
+					
 		return friendsCount;
 	}
 	public void setFriendsCount(int friendsCount) {
@@ -93,5 +97,13 @@ public class User {
 
 	public void setInteractionTime(String interactionTime) {
 		this.interactionTime = interactionTime;
+	}
+
+	public double getTwitterRank() {
+		return twitterRank;
+	}
+
+	public void setTwitterRank(double twitterRank) {
+		this.twitterRank = twitterRank;
 	}
 }

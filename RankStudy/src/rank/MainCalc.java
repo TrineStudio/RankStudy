@@ -19,10 +19,12 @@ import factors.PageRankCalculator;
 import factors.PopularityParser;
 import factors.SimilarityParser;
 import factors.TimeDecayParser;
+import factors.TwitterRankCalculator;
 
 public class MainCalc {
 	private static HashMap<String, Double> userPageRanks = new HashMap<String, Double>();
 	private static HashMap<String, Keyword> userKeywords = new HashMap<String, Keyword>();
+	private static HashMap<String, Double> userTwitterRanks = new HashMap<String, Double>();
 	
 
 	@SuppressWarnings("deprecation")
@@ -69,9 +71,11 @@ public class MainCalc {
 		    			
 		    			userPageRanks.put(user.getName(), pageRankValue);
 		    			userKeywords.put(user.getName(), keyword);
+		    			userTwitterRanks.put(user.getName(), new TwitterRankCalculator().getTwitterRank(user.getId()));
 		    		}
 
                     user.setPageRankValue(userPageRanks.get(user.getName()));
+                    user.setTwitterRank(userTwitterRanks.get(user.getName()));
 		    		weiboList.get(j).setPublisher(user);
 		    		
 		    		weiboList.get(j).setHomogeneity(new HomogeneityParser().calcHomogeneity(users.get(i).getId(), user.getId()));

@@ -20,4 +20,7 @@ public interface JSONConstants {
 	public static final String WEIBO_COUNT = "weibo_count";
 	public static final String INTERACTION_TYPE = "interaction_type";
 	public static final String INTERACTION_TIME = "interaction_time";
+	public static final String COUNT = "count";
+	public static final String KEYWORD = "keyword";
+	public static final String COUNTS = "counts";
 }

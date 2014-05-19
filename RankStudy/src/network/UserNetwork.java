@@ -5,6 +5,7 @@ import java.util.List;
 
 import model.JSONParser;
 import model.Keyword;
+import model.TwitterRankInfo;
 import model.User;
 import model.Weibo;
 
@@ -63,6 +64,19 @@ public class UserNetwork extends BaseNetwork{
 		String result = sendGet(url);
 		
 		return Double.parseDouble(result);
+	}
+	
+	public List<TwitterRankInfo> getUserTwitterRankInfoList(int id) {
+		String url = GET_USER_TWITTER_RANK_INFO + "?id=" + id;
+		
+		String result = sendGet(url);
+		
+		try {
+			return JSONParser.arrayToTwitterRankInfo(new JSONArray(result));
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ArrayList<TwitterRankInfo>();
+		}
 	}
 	
 	public List<User> getUserFollowers(int id) {

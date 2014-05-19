@@ -20,6 +20,7 @@ import Comparator.WeiboComparatorViaEdgeRank;
 import Comparator.WeiboComparatorViaPageRank;
 import Comparator.WeiboComparatorViaSHTFP;
 import Comparator.WeiboComparatorViaTime;
+import Comparator.WeiboComparatorViaTwitterRank;
 
 public class FileWriter {
 	private static int[] FACTORS = new int[]
@@ -45,7 +46,7 @@ public class FileWriter {
 			writeContents[i] = user.getId() + "," + weibo.getPublisher().getId() + "," + weibo.getId() + "," + 
 					weibo.getCreatedAt() + "," + weibo.getSimilarity() + "," + weibo.getHomogeneity() + "," + 
 	 				weibo.getTimeDecay() + "," + weibo.getFamiliarity() + "," + weibo.getPopularity() + "," +
-					weibo.getPublisher().getPageRankValue() + "," + weibo.getEdgeRankValue() + ",";
+					weibo.getPublisher().getPageRankValue() + "," + weibo.getEdgeRankValue() + "," + weibo.getPublisher().getTwitterRank() + ",";
 			
 			for (int j = 0; j != FACTORS.length; j++) {
 				writeContents[i] += weibo.caluclateFactors(FACTORS[j]) + ",";
@@ -80,6 +81,15 @@ public class FileWriter {
 			i = weiboList.indexOf(realWeiboList.get(j));
 			writeContents[i] += realWeiboList.get(j).getCurrentPositionValue() + ",";
 		}
+		
+		Collections.sort(realWeiboList, new WeiboComparatorViaTwitterRank());
+		
+		double pageValuesViaTwitterRank = getRankValues(realWeiboList);
+		
+		for (int j = 0; j != realWeiboList.size(); j++) {
+			i = weiboList.indexOf(realWeiboList.get(j));
+			writeContents[i] += realWeiboList.get(j).getCurrentPositionValue() + ",";
+		}
 
         double[] pageValuesViaFactors = new double[6];
             
@@ -105,13 +115,13 @@ public class FileWriter {
 		try {
 			writer = new PrintWriter(folderLocation + "/" + user.getName() + ".csv", "UTF-8");
 			
-			writer.println("UserId,SenderId,WeiboId,Time,Similarity,Homogeneity,TimeDecay,Familiarity,Popularity,PageRank Value,EdgeRank Value,SHTFP Value,SHTF value,SHTP Value,SHFP Value,STFP Value,HTFP Value,Time Position Value,PageRank Position Value,EdgeRank Position Value,SHTFP Position Value,SHTF Position Value,SHTP Position Value,SHFP Position Value,STFP Position Value,HTFP Position Value,has Commented,has reposted");
+			writer.println("UserId,SenderId,WeiboId,Time,Similarity,Homogeneity,TimeDecay,Familiarity,Popularity,PageRank Value,EdgeRank Value,Twitter Rank Value,SHTFP Value,SHTF value,SHTP Value,SHFP Value,STFP Value,HTFP Value,Time Position Value,PageRank Position Value,EdgeRank Position Value,Twitter Rank Position Value,SHTFP Position Value,SHTF Position Value,SHTP Position Value,SHFP Position Value,STFP Position Value,HTFP Position Value,has Commented,has reposted");
 			
 			for (int j = 0; j != writeContents.length; j++) {
 				writer.println(writeContents[j]);
 			}
 			
-			writer.write(",,,,,,,,,,,,,,,,," + pageValuesViaTime + "," + pageValuesViaPageRank + "," + pageValuesViaEdgeRank + ",");
+			writer.write(",,,,,,,,,,,,,,,,," + pageValuesViaTime + "," + pageValuesViaPageRank + "," + pageValuesViaEdgeRank + "," + pageValuesViaTwitterRank + ",");
 			
 			for (int j = 0; j != pageValuesViaFactors.length; j++)
 				writer.write(pageValuesViaFactors[j] + ",");
@@ -132,14 +142,21 @@ public class FileWriter {
 		int i = 0;
 		int totalCount = weiboList.size();
 		
+		int operationCount = 0;
+		
 		for (Weibo weibo: weiboList) {
 			int times = 0;
 			
-			if (weibo.isCommented())
+			if (weibo.isCommented()) {
 				times += 1;
+			}
 			
-			if (weibo.isForwarded())
+			if (weibo.isForwarded()) {
 				times += 2; 
+			}
+			
+			if (weibo.isForwarded() || weibo.isCommented())
+				operationCount++;
 			
 			double rankValue = (double)((double)(totalCount - i) / totalCount);
 			
@@ -152,6 +169,6 @@ public class FileWriter {
 			i++;
 		}
 		
-		return rankValues;
+		return (double)(rankValues / (double)(operationCount));
 	}
 }
