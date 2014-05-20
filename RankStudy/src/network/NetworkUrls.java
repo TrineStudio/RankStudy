@@ -21,4 +21,5 @@ public interface NetworkUrls {
 	public static final String GET_USER_TWITTER_RANK_INFO = HOST + "getUserTwitterRankInfo.php";
 	public static final String GET_USER_TWITTER_RANK = HOST + "getUserTwitterRank.php";
 	public static final String SET_USER_TWITTER_RANK = HOST + "setUserTwitterRank.php";
+	public static final String GET_USER_INTERACTION_COUNT = HOST + "getUserInteractionCount.php";
 }

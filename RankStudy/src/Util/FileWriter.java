@@ -137,7 +137,7 @@ public class FileWriter {
 				writer.println(writeContents[j]);
 			}
 			
-			writer.write(",,,,,,,,,,,,,,,,,," + pageValuesViaTime + "," + pageValuesViaPageRank + "," + pageValuesViaEdgeRank + "," + pageValuesViaTwitterRank + "," + pageValuesViaHTP + ",");
+			writer.write(",,,,,,,,,,,,,,,,," + pageValuesViaTime + "," + pageValuesViaPageRank + "," + pageValuesViaEdgeRank + "," + pageValuesViaTwitterRank + "," + pageValuesViaHTP + ",");
 
 			for (int j = 0; j != normalPageValuesViaFactors.length; j++)
 				writer.write(normalPageValuesViaFactors[j] + ",");

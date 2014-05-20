@@ -19,11 +19,11 @@ public class WeiboComparatorViaHPT implements Comparator<Weibo>{
 		int result = 0;
 		
 		if (o1PageRank < o2PageRank)
-			result = 1;
+			result = -1;
 		else if (o1PageRank == o2PageRank)
 			result = 0;
 		else
-			result = -1;
+			result = 1;
 		
 		return result;
 	}
@@ -33,35 +33,35 @@ public class WeiboComparatorViaHPT implements Comparator<Weibo>{
 		
 		double[] values = new double[]
 		{
-		    1.0f * SWEIGHT, 1.0f * TWEIGHT, 1.0f * PWEIGHT, 1.0f * HWEIGHT, 1.0f * FWEIGHT
+		    1.0f, 1.0f, 1.0f, 1.0f, 1.0f
 		};
-		
-		double indexSqrt = 0;
-
-		double valueSqrt = 0;
 		
 		for (int i = 0; i != indexes.length; i++) {
 			if (i == SIMILARITY || i == FAMILIARITY)
 				continue;
 			else {
-				factorResult += indexes[i] * values[i];
-				indexSqrt += indexes[i] * indexes[i];
-				valueSqrt += values[i] * values[i];
+				double tmp;
+
+				if (S[i] != 0)
+					tmp = ((double)(indexes[i] - AVG[i])) / S[i];
+				else
+					tmp = indexes[i];
+				
+				factorResult += Math.pow(tmp - values[i], 2);
 			}
 		}
-		
-		
-		return Math.acos(factorResult / (Math.sqrt(indexSqrt) * Math.sqrt(valueSqrt)));
+
+		return Math.sqrt(factorResult);
 	}
 	
 	public double[] getWeiboIndexes(Weibo weibo) {
 		double[] indexes = new double[5];
 		
-        indexes[0] = weibo.getSimilarity() * SWEIGHT;
-        indexes[1] = weibo.getTimeDecay() * TWEIGHT;
-        indexes[2] = weibo.getPopularity() * PWEIGHT;
-        indexes[3] = weibo.getHomogeneity() * HWEIGHT;
-        indexes[4] = weibo.getFamiliarity() * FWEIGHT;
+        indexes[0] = weibo.getSimilarity();
+        indexes[1] = weibo.getTimeDecay(); 
+        indexes[2] = weibo.getPopularity();
+        indexes[3] = weibo.getHomogeneity();
+        indexes[4] = weibo.getFamiliarity();
 		
 		return indexes;
 	}

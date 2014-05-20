@@ -10,7 +10,9 @@ import model.Keyword;
 import model.User;
 import model.Weibo;
 import network.UserNetwork;
+import Comparator.WeiboComparatorViaSHTFP;
 import Util.FileWriter;
+import Util.MathUtil;
 import factors.EdgeRankCalculator;
 import factors.FamiliarityParser;
 import factors.HomogeneityParser;
@@ -97,8 +99,10 @@ public class MainCalc {
 		    		//else {
 		    		//	weiboList.get(j).setPopularity(new PopularityParser().calcPopularity(weiboList.get(j).getRepostsCount(), weiboList.get(j).getCommentsCount(), weiboList.get(j).getAttitudesCount()));
 		    		//}
+
+		    		weiboList.get(j).setTimeDecay(new TimeDecayParser().calcTimeDecay(weiboList.get(j).getCreatedAt()));
 		    		
-		    		weiboList.get(j).setFamiliarity(new FamiliarityParser().calcFamiliarity(weiboList.get(j).isBiFollowing(), users.get(i).getFollowersCount(), user.getFollowersCount()));
+		    		weiboList.get(j).setFamiliarity(new FamiliarityParser().calcFamiliarity(weiboList.get(j).isBiFollowing(), users.get(i), user));
 		    		
 		    		Keyword keyword = userKeywords.get(user.getName());
 		    		
@@ -108,57 +112,37 @@ public class MainCalc {
 		    		
 		    		weiboList.get(j).setSimilarity(new SimilarityParser(length).calcSimilarity(userKeyword.getKeyWords(), keyword.getKeyWords()));
 
+		    		EdgeRankCalculator.getEdgeRank(weiboList.get(j));
+
 		    		System.out.println(isBiFollowed);
 		    		realWeiboList.add(weiboList.get(j));
 		    	}
 		    }
-		    
-		    String standardTime = "01/01/2010 12:00";
-		    double maxHomogeneity = 0;
-		    double maxSimilarity = 0;
-		    double maxFamilarity = 0;
+
+		    double[] similarityArray = new double[realWeiboList.size()];
+		    double[] homogeneityArray = new double[realWeiboList.size()];
+		    double[] timeDecayArray = new double[realWeiboList.size()];
+		    double[] popularityArray = new double[realWeiboList.size()];
+		    double[] familarityArray = new double[realWeiboList.size()];
 		    
 		    for (int j = 0; j != realWeiboList.size(); j++) {
 		    	Weibo tmp = realWeiboList.get(j);
-		    	
-		    	if (new Date(tmp.getCreatedAt()).getTime() >= new Date(standardTime).getTime()) {
-		    		standardTime = tmp.getCreatedAt();
-		    	}
-		    	
-		    	if (tmp.getHomogeneity() > maxHomogeneity)
-		    		maxHomogeneity = tmp.getHomogeneity();
-		    	
-		    	if (tmp.getSimilarity() > maxSimilarity) 
-		    		maxSimilarity = tmp.getSimilarity();
-		    	
-		    	if (tmp.getFamiliarity() > maxFamilarity)
-		    		maxFamilarity = tmp.getFamiliarity();
+
+		    	similarityArray[j] = tmp.getSimilarity();
+		    	homogeneityArray[j] = tmp.getHomogeneity();
+		    	timeDecayArray[j] = tmp.getTimeDecay();
+		    	popularityArray[j] = tmp.getPopularity();
+		    	familarityArray[j] = tmp.getFamiliarity();
 		    }
 		    
-		    double maxTimeDecay = 0;
-		    double maxPopularity = 0;
+		    double[][] indexArrays = new double[][] 
+		    {
+		    		similarityArray, timeDecayArray, popularityArray, homogeneityArray, familarityArray
+		    };
 		    
-		    for (int j = 0; j != realWeiboList.size(); j++) {
-		    	Weibo tmp = realWeiboList.get(j);
-		    	tmp.setTimeDecay(new TimeDecayParser().calcTimeDecay(tmp.getCreatedAt(), standardTime));
-		    	tmp.setHomogeneity(tmp.getHomogeneity() / maxHomogeneity);
-		    	tmp.setSimilarity(tmp.getSimilarity() / maxSimilarity);
-		    	tmp.setFamiliarity(tmp.getFamiliarity() / maxFamilarity);
-		    	
-		    	EdgeRankCalculator.getEdgeRank(tmp, standardTime);
-		    	
-		    	if (tmp.getTimeDecay() > maxTimeDecay)
-		    		maxTimeDecay = tmp.getTimeDecay();
-		    	
-		    	if (tmp.getPopularity() > maxPopularity)
-		    		maxPopularity = tmp.getPopularity();
-		    }
-		    
-		    for (int j = 0; j != realWeiboList.size(); j++) {
-		    	Weibo tmp = realWeiboList.get(j);
-		    	
-		    	tmp.setTimeDecay(tmp.getTimeDecay() / maxTimeDecay);
-		    	tmp.setPopularity(tmp.getPopularity() / maxPopularity);
+		    for (int j = 0; j != indexArrays.length; j++) {
+		    	WeiboComparatorViaSHTFP.AVG[j] = MathUtil.getAverage(indexArrays[j]);
+		    	WeiboComparatorViaSHTFP.S[j] = MathUtil.getS(indexArrays[j], WeiboComparatorViaSHTFP.AVG[j]);
 		    }
 		    
 		    FileWriter.writeUserReport("/Users/trinezealot/maggie/result", users.get(i), realWeiboList);

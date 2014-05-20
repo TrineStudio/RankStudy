@@ -19,6 +19,9 @@ public class WeiboComparatorViaSHTFP implements Comparator<Weibo>{
 	public static final int HWEIGHT = 6;
 	public static final int FWEIGHT = 2;
 	
+	public static final double AVG[] = new double[5];
+	public static final double S[] = new double[5];
+	
 	private int omit;
 	private boolean isNormal;
 	
@@ -55,11 +58,11 @@ public class WeiboComparatorViaSHTFP implements Comparator<Weibo>{
 		int result = 0;
 		
 		if (o1PageRank < o2PageRank)
-			result = 1;
+			result = -1;
 		else if (o1PageRank == o2PageRank)
 			result = 0;
 		else
-			result = -1;
+			result = 1;
 		
 		return result;
 	}
@@ -76,22 +79,22 @@ public class WeiboComparatorViaSHTFP implements Comparator<Weibo>{
 			values = new double[]{1.0f, 1.0f, 1.0f, 1.0f, 1.0f};
 		}
 		
-		double indexSqrt = 0;
-
-		double valueSqrt = 0;
-		
 		for (int i = 0; i != indexes.length; i++) {
 			if (i == omit)
 				continue;
 			else {
-				factorResult += indexes[i] * values[i];
-				indexSqrt += indexes[i] * indexes[i];
-				valueSqrt += values[i] * values[i];
+				double tmp;
+
+				if (S[i] != 0)
+					tmp = ((double)(indexes[i] - AVG[i])) / S[i];
+				else
+					tmp = indexes[i];
+				
+				factorResult += Math.pow(tmp - values[i], 2);
 			}
 		}
 		
-		
-		return Math.acos(factorResult / (Math.sqrt(indexSqrt) * Math.sqrt(valueSqrt)));
+		return Math.sqrt(factorResult);
 	}
 	
 	public double[] getWeiboIndexes(Weibo weibo) {

@@ -150,6 +150,20 @@ public class UserNetwork extends BaseNetwork{
 		}
 	}
 	
+	public int getUserInteractionCount(int id1, int id2) {
+		String url = GET_USER_INTERACTION_COUNT + "?id1=" + id1 + "&id2=" + id2;
+		
+		String result = sendGet(url);
+
+		try {
+			return Integer.parseInt(result.substring(0, result.length() - 1));
+		} catch (Exception e) {
+			e.printStackTrace();
+			return 0;
+		}
+		
+	}
+	
 	public int getMultiFollowerCount(int id1, int id2) {
 		String url = GET_MULTI_FOLLOER_COUNT + "?id1=" + id1 + "&id2=" + id2;
 		

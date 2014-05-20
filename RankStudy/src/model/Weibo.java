@@ -1,6 +1,7 @@
 package model;
 
 import Comparator.WeiboComparatorViaSHTFP;
+import static Comparator.WeiboComparatorViaSHTFP.*;
 
 public class Weibo {
 	private int id;
@@ -173,21 +174,23 @@ public class Weibo {
 		    1.0f * WeiboComparatorViaSHTFP.FWEIGHT
 		};
 		
-		double indexSqrt = 0;
-
-		double valueSqrt = 0;
-		
 		for (int i = 0; i != indexes.length; i++) {
 			if (i == omit)
 				continue;
 			else {
-				factorResult += indexes[i] * values[i];
-				indexSqrt += indexes[i] * indexes[i];
-				valueSqrt += values[i] * values[i];
+				double tmp;
+
+				if (S[i] != 0)
+					tmp = ((double)(indexes[i] - AVG[i])) / S[i];
+				else
+					tmp = indexes[i];
+				
+				factorResult += Math.pow(tmp - values[i], 2);
+	
 			}
 		}
 		
-		return Math.acos(factorResult / (Math.sqrt(indexSqrt) * Math.sqrt(valueSqrt)));
+		return Math.sqrt(factorResult);
 	}
 	
 	public double[] getWeiboIndexes() {

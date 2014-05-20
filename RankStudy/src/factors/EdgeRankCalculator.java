@@ -10,7 +10,7 @@ public class EdgeRankCalculator {
 	
 	public static int k = 1;
 
-	public static double getEdgeRank(Weibo weibo, String standardTime){
+	public static double getEdgeRank(Weibo weibo){
 		List<User> users = new WeiboNetwork().getWeiboInteractionUsers(weibo.getId());
 		
 		double value = 0;
@@ -18,7 +18,8 @@ public class EdgeRankCalculator {
 		
 		for (int i = 0; i != users.size(); i++) {
 			User user = users.get(i);
-			value += (double)(user.getWeiboCount() * k) / (double)user.getFriendsCount() * (double)user.getInteractionType() * new TimeDecayParser().calcTimeDecay(user.getInteractionTime(), standardTime);
+			value += (double)(user.getWeiboCount() * k) / (double)user.getFriendsCount() * (double)user.getInteractionType() * new TimeDecayParser().calcTimeDecay(user.getInteractionTime());
+
 			popularityValue += (double)(user.getWeiboCount() * k) / (double)user.getFriendsCount() * (double)user.getInteractionType();
 		}
 		
