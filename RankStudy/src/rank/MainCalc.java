@@ -10,13 +10,11 @@ import model.Keyword;
 import model.User;
 import model.Weibo;
 import network.UserNetwork;
-import network.WeiboNetwork;
 import Util.FileWriter;
 import factors.EdgeRankCalculator;
 import factors.FamiliarityParser;
 import factors.HomogeneityParser;
 import factors.PageRankCalculator;
-import factors.PopularityParser;
 import factors.SimilarityParser;
 import factors.TimeDecayParser;
 import factors.TwitterRankCalculator;
@@ -51,6 +49,7 @@ public class MainCalc {
 			List<Weibo> realWeiboList = new ArrayList<Weibo>();
 			
 		    for (int j = 0; j != weiboList.size(); j++) {
+		    	
 		    	Date tempDate = new Date(weiboList.get(j).getCreatedAt());
 		    	
 		    	if (tempDate.getTime() > date.getTime()) {
@@ -87,22 +86,19 @@ public class MainCalc {
 		    		
 		    		weiboList.get(j).setHomogeneity(new HomogeneityParser().calcHomogeneity(users.get(i).getId(), user.getId()));
 		    		
-		    		if (weiboList.get(j).isForwarded()) {
-		    			Weibo weibo = new WeiboNetwork().getWeiboForwardInfo(users.get(i).getId(), weiboList.get(j).getId());
-		    			
-		    			if (weibo == null)
-		    				weiboList.get(j).setPopularity(new PopularityParser().calcPopularity(weiboList.get(j).getRepostsCount(), weiboList.get(j).getCommentsCount(), weiboList.get(j).getAttitudesCount()));
-		    			else
-		    				weiboList.get(j).setPopularity(new PopularityParser().calcPopularity(weibo.getRepostsCount(), weibo.getCommentsCount(), weibo.getAttitudesCount(), weiboList.get(j).getRepostsCount(), weiboList.get(j).getCommentsCount(), weiboList.get(j).getAttitudesCount()));
-		    		}
-		    		else {
-		    			weiboList.get(j).setPopularity(new PopularityParser().calcPopularity(weiboList.get(j).getRepostsCount(), weiboList.get(j).getCommentsCount(), weiboList.get(j).getAttitudesCount()));
-		    		}
+		    		//if (weiboList.get(j).isForwarded()) {
+		    		//	Weibo weibo = new WeiboNetwork().getWeiboForwardInfo(users.get(i).getId(), weiboList.get(j).getId());
+		    		//	
+		    		//	if (weibo == null)
+		    		//		weiboList.get(j).setPopularity(new PopularityParser().calcPopularity(weiboList.get(j).getRepostsCount(), weiboList.get(j).getCommentsCount(), weiboList.get(j).getAttitudesCount()));
+		    		//	else
+		    		//		weiboList.get(j).setPopularity(new PopularityParser().calcPopularity(weibo.getRepostsCount(), weibo.getCommentsCount(), weibo.getAttitudesCount(), weiboList.get(j).getRepostsCount(), weiboList.get(j).getCommentsCount(), weiboList.get(j).getAttitudesCount()));
+		    		//}
+		    		//else {
+		    		//	weiboList.get(j).setPopularity(new PopularityParser().calcPopularity(weiboList.get(j).getRepostsCount(), weiboList.get(j).getCommentsCount(), weiboList.get(j).getAttitudesCount()));
+		    		//}
 		    		
 		    		weiboList.get(j).setFamiliarity(new FamiliarityParser().calcFamiliarity(weiboList.get(j).isBiFollowing(), users.get(i).getFollowersCount(), user.getFollowersCount()));
-		    		weiboList.get(j).setTimeDecay(new TimeDecayParser().calcTimeDecay(weiboList.get(j).getCreatedAt()));
-		    		
-		    		EdgeRankCalculator.getEdgeRank(weiboList.get(j));
 		    		
 		    		Keyword keyword = userKeywords.get(user.getName());
 		    		
@@ -115,6 +111,54 @@ public class MainCalc {
 		    		System.out.println(isBiFollowed);
 		    		realWeiboList.add(weiboList.get(j));
 		    	}
+		    }
+		    
+		    String standardTime = "01/01/2010 12:00";
+		    double maxHomogeneity = 0;
+		    double maxSimilarity = 0;
+		    double maxFamilarity = 0;
+		    
+		    for (int j = 0; j != realWeiboList.size(); j++) {
+		    	Weibo tmp = realWeiboList.get(j);
+		    	
+		    	if (new Date(tmp.getCreatedAt()).getTime() >= new Date(standardTime).getTime()) {
+		    		standardTime = tmp.getCreatedAt();
+		    	}
+		    	
+		    	if (tmp.getHomogeneity() > maxHomogeneity)
+		    		maxHomogeneity = tmp.getHomogeneity();
+		    	
+		    	if (tmp.getSimilarity() > maxSimilarity) 
+		    		maxSimilarity = tmp.getSimilarity();
+		    	
+		    	if (tmp.getFamiliarity() > maxFamilarity)
+		    		maxFamilarity = tmp.getFamiliarity();
+		    }
+		    
+		    double maxTimeDecay = 0;
+		    double maxPopularity = 0;
+		    
+		    for (int j = 0; j != realWeiboList.size(); j++) {
+		    	Weibo tmp = realWeiboList.get(j);
+		    	tmp.setTimeDecay(new TimeDecayParser().calcTimeDecay(tmp.getCreatedAt(), standardTime));
+		    	tmp.setHomogeneity(tmp.getHomogeneity() / maxHomogeneity);
+		    	tmp.setSimilarity(tmp.getSimilarity() / maxSimilarity);
+		    	tmp.setFamiliarity(tmp.getFamiliarity() / maxFamilarity);
+		    	
+		    	EdgeRankCalculator.getEdgeRank(tmp, standardTime);
+		    	
+		    	if (tmp.getTimeDecay() > maxTimeDecay)
+		    		maxTimeDecay = tmp.getTimeDecay();
+		    	
+		    	if (tmp.getPopularity() > maxPopularity)
+		    		maxPopularity = tmp.getPopularity();
+		    }
+		    
+		    for (int j = 0; j != realWeiboList.size(); j++) {
+		    	Weibo tmp = realWeiboList.get(j);
+		    	
+		    	tmp.setTimeDecay(tmp.getTimeDecay() / maxTimeDecay);
+		    	tmp.setPopularity(tmp.getPopularity() / maxPopularity);
 		    }
 		    
 		    FileWriter.writeUserReport("/Users/trinezealot/maggie/result", users.get(i), realWeiboList);

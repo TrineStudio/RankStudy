@@ -11,13 +11,13 @@ public class TimeDecayParser {
 		sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 	}
 	
-	public double calcTimeDecay(String timeString){
+	@SuppressWarnings("deprecation")
+	public double calcTimeDecay(String timeString, String standradTime){
 		double timeDecay = 0.0d;
 		
 		try {
-			@SuppressWarnings("deprecation")
 			Date date = new Date(timeString);
-			Date dateNow = new Date();
+			Date dateNow = new Date(standradTime);
 			
 			long secDecay = (dateNow.getTime()/ 1000) - (date.getTime()/ 1000);
 			if(secDecay == 0){
