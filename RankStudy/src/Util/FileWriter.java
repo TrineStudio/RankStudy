@@ -12,7 +12,6 @@ import java.util.List;
 import model.User;
 import model.Weibo;
 import Comparator.WeiboComparatorViaEdgeRank;
-import Comparator.WeiboComparatorViaHPT;
 import Comparator.WeiboComparatorViaPageRank;
 import Comparator.WeiboComparatorViaSHTFP;
 import Comparator.WeiboComparatorViaTime;
@@ -21,7 +20,7 @@ import Comparator.WeiboComparatorViaTwitterRank;
 public class FileWriter {
 	private static int[] FACTORS = new int[]
 	{
-		NONE, POPULARITY, FAMILIARITY, TIME_DECAY, HOMOGENEITY, SIMILARITY
+		NONE, POPULARITY,TIME_DECAY,FAMILIARITY,HOMOGENEITY, SIMILARITY
 	};
 
 	public static void writeUserReport(String folderLocation, User user, List<Weibo> realWeiboList) {
@@ -44,9 +43,7 @@ public class FileWriter {
 	 				weibo.getTimeDecay() + "," + weibo.getFamiliarity() + "," + weibo.getPopularity() + "," +
 					weibo.getPublisher().getPageRankValue() + "," + weibo.getEdgeRankValue() + "," + weibo.getPublisher().getTwitterRank() + ",";
 			
-			for (int j = 0; j != FACTORS.length; j++) {
-				writeContents[i] += weibo.caluclateFactors(FACTORS[j]) + ",";
-			}
+					writeContents[i] += weibo.caluclateFactors(NONE) + ",";
 			
 			i++;
   		}
@@ -87,15 +84,6 @@ public class FileWriter {
 			writeContents[i] += realWeiboList.get(j).getCurrentPositionValue() + ",";
 		}
 
-		Collections.sort(realWeiboList, new WeiboComparatorViaHPT());
-		
-		double pageValuesViaHTP = getRankValues(realWeiboList);
-		
-		for (int j = 0; j != realWeiboList.size(); j++) {
-			i = weiboList.indexOf(realWeiboList.get(j));
-			writeContents[i] += realWeiboList.get(j).getCurrentPositionValue() + ",";
-		}
-
         double[] normalPageValuesViaFactors = new double[6];
             
         for (int z = 0; z != FACTORS.length; z++) {
@@ -107,9 +95,9 @@ public class FileWriter {
             	writeContents[i] += realWeiboList.get(j).getCurrentPositionValue() + ",";
             }
         }
-        
-        double[] pageValuesViaFactors = new double[6];
 
+        double[] pageValuesViaFactors = new double[6];
+            
         for (int z = 0; z != FACTORS.length; z++) {
             Collections.sort(realWeiboList, new WeiboComparatorViaSHTFP(FACTORS[z], false));
             pageValuesViaFactors[z] = getRankValues(realWeiboList);
@@ -119,7 +107,6 @@ public class FileWriter {
             	writeContents[i] += realWeiboList.get(j).getCurrentPositionValue() + ",";
             }
         }
-
         
         i = 0;
         
@@ -131,17 +118,17 @@ public class FileWriter {
 		try {
 			writer = new PrintWriter(folderLocation + "/" + user.getName() + ".csv", "UTF-8");
 			
-			writer.println("UserId,SenderId,WeiboId,Time,Similarity,Homogeneity,TimeDecay,Familiarity,Popularity,PageRank Value,EdgeRank Value,Twitter Rank Value,SHTFP Value,SHTF value,SHTP Value,SHFP Value,STFP Value,HTFP Value,Time Position Value,PageRank Position Value,EdgeRank Position Value,Twitter Rank Position Value,HTP,SHTFP Normal Position Value,SHTF Normal Position Value,SHTP Normal Position Value,SHFP Normal Position Value,STFP Normal Position Value,HTFP Normal Position Value,SHTFP Position Value,SHTF Position Value,SHTP Position Value,SHFP Position Value,STFP Position Value,HTFP Position Value,has Commented,has reposted");
+			writer.println("UserId,SenderId,WeiboId,Time,Similarity,Homogeneity,TimeDecay,Familiarity,Popularity,PageRank Value,EdgeRank Value,Twitter Rank Value,SHTFP Value,Time Position Value,PageRank Position Value,EdgeRank Position Value,Twitter Rank Position Value,SHTFP Normal Position Value,P Normal Position Value, T Normal Position Value,F Normal Position Value,H Normal Position Value,S Normal Position Value,SHTFP Position Value,P * " + K_FACTORS[POPULARITY] + " Position Value, T * " + K_FACTORS[TIME_DECAY] + " Position Value,F * " + K_FACTORS[FAMILIARITY] + " Position Value,H * " + K_FACTORS[HOMOGENEITY] + " Position Value,S * " + K_FACTORS[SIMILARITY] + " Position Value,has Commented,has reposted");
 			
 			for (int j = 0; j != writeContents.length; j++) {
 				writer.println(writeContents[j]);
 			}
 			
-			writer.write(",,,,,,,,,,,,,,,,," + pageValuesViaTime + "," + pageValuesViaPageRank + "," + pageValuesViaEdgeRank + "," + pageValuesViaTwitterRank + "," + pageValuesViaHTP + ",");
+			writer.write(",,,,,,,,,,,,," + pageValuesViaTime + "," + pageValuesViaPageRank + "," + pageValuesViaEdgeRank + "," + pageValuesViaTwitterRank + ",");
 
 			for (int j = 0; j != normalPageValuesViaFactors.length; j++)
 				writer.write(normalPageValuesViaFactors[j] + ",");
-			
+
 			for (int j = 0; j != pageValuesViaFactors.length; j++)
 				writer.write(pageValuesViaFactors[j] + ",");
 			

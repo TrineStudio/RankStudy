@@ -14,10 +14,14 @@ public class WeiboComparatorViaSHTFP implements Comparator<Weibo>{
 	public static final int FAMILIARITY = 4;
 	
 	public static final int SWEIGHT = 1;
-	public static final int TWEIGHT = 6;
-	public static final int PWEIGHT = 6;
-	public static final int HWEIGHT = 6;
-	public static final int FWEIGHT = 2;
+	public static final int TWEIGHT = 1;
+	public static final int PWEIGHT = 1;
+	public static final int HWEIGHT = 1;
+	public static final int FWEIGHT = 1;
+	
+	public static final double[] K_FACTORS = new double[]{8.7f,6.5f,12.4f,5.2f,8.6f,};
+	
+	public static final double[] K = new double[]{1, 1, 1, 1, 1};
 	
 	public static final double AVG[] = new double[5];
 	public static final double S[] = new double[5];
@@ -58,11 +62,11 @@ public class WeiboComparatorViaSHTFP implements Comparator<Weibo>{
 		int result = 0;
 		
 		if (o1PageRank < o2PageRank)
-			result = -1;
+			result = 1;
 		else if (o1PageRank == o2PageRank)
 			result = 0;
 		else
-			result = 1;
+			result = -1;
 		
 		return result;
 	}
@@ -70,54 +74,37 @@ public class WeiboComparatorViaSHTFP implements Comparator<Weibo>{
 	public double caluclateFactors(double[] indexes) {
 		double factorResult = 0;
 		
-		double[] values = new double[]
-		{
-		    1.0f * SWEIGHT, 1.0f * TWEIGHT, 1.0f * PWEIGHT, 1.0f * HWEIGHT, 1.0f * FWEIGHT
-		};
-		
-		if (isNormal) {
-			values = new double[]{1.0f, 1.0f, 1.0f, 1.0f, 1.0f};
-		}
-		
 		for (int i = 0; i != indexes.length; i++) {
-			if (i == omit)
+			if (i != omit && omit != NONE)
 				continue;
 			else {
 				double tmp;
-
-				if (S[i] != 0)
-					tmp = ((double)(indexes[i] - AVG[i])) / S[i];
-				else
+				if (S[i] == 0)
 					tmp = indexes[i];
-				
-				factorResult += Math.pow(tmp - values[i], 2);
+				else
+					tmp = (double)(indexes[i] - AVG[i]) / S[i];
+
+				if (!isNormal)
+					factorResult += K[i] * tmp * K_FACTORS[i];
+				else
+					factorResult += K[i] * tmp;
 			}
 		}
 		
-		return Math.sqrt(factorResult);
+		return factorResult;
 	}
 	
 	public double[] getWeiboIndexes(Weibo weibo) {
 		double[] indexes = new double[5];
-		
-		if (!isNormal) {
-			indexes[0] = weibo.getSimilarity() * SWEIGHT;
-        	indexes[1] = weibo.getTimeDecay() * TWEIGHT;
-        	indexes[2] = weibo.getPopularity() * PWEIGHT;
-        	indexes[3] = weibo.getHomogeneity() * HWEIGHT;
-        	indexes[4] = weibo.getFamiliarity() * FWEIGHT;
-		}
-		else {
-			indexes[0] = weibo.getSimilarity();
-        	indexes[1] = weibo.getTimeDecay();
-        	indexes[2] = weibo.getPopularity(); 
-        	indexes[3] = weibo.getHomogeneity();
-        	indexes[4] = weibo.getFamiliarity();
-		}
-		
-		return indexes;
-	}
 
+		indexes[0] = weibo.getSimilarity();
+        indexes[1] = weibo.getTimeDecay();
+        indexes[2] = weibo.getPopularity(); 
+        indexes[3] = weibo.getHomogeneity();
+        indexes[4] = weibo.getFamiliarity();
+        
+        return indexes;
+	}
 
 }
 

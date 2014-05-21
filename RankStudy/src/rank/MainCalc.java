@@ -37,7 +37,7 @@ public class MainCalc {
 		calendar.set(Calendar.MONTH, 3);
 		Date date = calendar.getTime();
 		
-		for (int i = 0; i != users.size(); i++) {
+		for (int i = 0; i != 35; i++) {
 			List<Weibo> weiboList = new UserNetwork().getUserAvailableWeibo(users.get(i).getId());
 			
 			Keyword userKeyword = new UserNetwork().getUserKeyword(users.get(i).getId());

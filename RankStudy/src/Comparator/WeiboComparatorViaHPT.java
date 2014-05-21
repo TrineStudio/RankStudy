@@ -31,27 +31,15 @@ public class WeiboComparatorViaHPT implements Comparator<Weibo>{
 	public double caluclateFactors(double[] indexes) {
 		double factorResult = 0;
 		
-		double[] values = new double[]
-		{
-		    1.0f, 1.0f, 1.0f, 1.0f, 1.0f
-		};
-		
 		for (int i = 0; i != indexes.length; i++) {
 			if (i == SIMILARITY || i == FAMILIARITY)
 				continue;
 			else {
-				double tmp;
-
-				if (S[i] != 0)
-					tmp = ((double)(indexes[i] - AVG[i])) / S[i];
-				else
-					tmp = indexes[i];
-				
-				factorResult += Math.pow(tmp - values[i], 2);
+				factorResult += indexes[i] * K[i];
 			}
 		}
 
-		return Math.sqrt(factorResult);
+		return factorResult;
 	}
 	
 	public double[] getWeiboIndexes(Weibo weibo) {

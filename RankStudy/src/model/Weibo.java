@@ -165,32 +165,20 @@ public class Weibo {
 		double[] indexes = getWeiboIndexes();
 		double factorResult = 0;
 		
-		double[] values = new double[]
-		{
-		    1.0f * WeiboComparatorViaSHTFP.SWEIGHT, 
-		    1.0f * WeiboComparatorViaSHTFP.TWEIGHT,
-		    1.0f * WeiboComparatorViaSHTFP.PWEIGHT,
-		    1.0f * WeiboComparatorViaSHTFP.HWEIGHT,
-		    1.0f * WeiboComparatorViaSHTFP.FWEIGHT
-		};
-		
 		for (int i = 0; i != indexes.length; i++) {
-			if (i == omit)
+			if (i != omit && omit != NONE)
 				continue;
 			else {
 				double tmp;
-
-				if (S[i] != 0)
-					tmp = ((double)(indexes[i] - AVG[i])) / S[i];
-				else
+				if (S[i] == 0)
 					tmp = indexes[i];
-				
-				factorResult += Math.pow(tmp - values[i], 2);
-	
+				else
+					tmp = (double)(indexes[i] - AVG[i]) / S[i];
+				factorResult += K[i] * tmp;
 			}
 		}
 		
-		return Math.sqrt(factorResult);
+		return factorResult;
 	}
 	
 	public double[] getWeiboIndexes() {
