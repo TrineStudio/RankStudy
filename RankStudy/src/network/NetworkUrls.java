@@ -22,4 +22,6 @@ public interface NetworkUrls {
 	public static final String GET_USER_TWITTER_RANK = HOST + "getUserTwitterRank.php";
 	public static final String SET_USER_TWITTER_RANK = HOST + "setUserTwitterRank.php";
 	public static final String GET_USER_INTERACTION_COUNT = HOST + "getUserInteractionCount.php";
+	public static final String GET_WEIBO_INDEX = HOST + "getWeiboIndexes.php";
+	public static final String SET_WEIBO_INDEX = HOST + "setWeiboIndex.php";
 }

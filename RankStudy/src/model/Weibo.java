@@ -161,7 +161,7 @@ public class Weibo {
 		this.timeDecay = timeDecay;
 	}
 
-	public double caluclateFactors(int omit) {
+	public double caluclateFactors(int omit, boolean isNormal) {
 		double[] indexes = getWeiboIndexes();
 		double factorResult = 0;
 		
@@ -174,7 +174,11 @@ public class Weibo {
 					tmp = indexes[i];
 				else
 					tmp = (double)(indexes[i] - AVG[i]) / S[i];
-				factorResult += K[i] * tmp;
+
+				if (!isNormal)
+					factorResult += K[i] * tmp * K_FACTORS[i];
+				else
+					factorResult += K[i] * tmp;
 			}
 		}
 		

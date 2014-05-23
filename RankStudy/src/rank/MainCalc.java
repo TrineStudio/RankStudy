@@ -9,7 +9,9 @@ import java.util.List;
 import model.Keyword;
 import model.User;
 import model.Weibo;
+import model.WeiboIndex;
 import network.UserNetwork;
+import network.WeiboNetwork;
 import Comparator.WeiboComparatorViaSHTFP;
 import Util.FileWriter;
 import Util.MathUtil;
@@ -26,18 +28,40 @@ public class MainCalc {
 	private static HashMap<String, Keyword> userKeywords = new HashMap<String, Keyword>();
 	private static HashMap<String, Double> userTwitterRanks = new HashMap<String, Double>();
 	
+	
+	public static boolean setWeiboIndex(Weibo weibo) {
+		WeiboIndex weiboIndex = new WeiboNetwork().getWeiboIndex(weibo.getId());
+		
+		if (weiboIndex == null)
+			return false;
+		else {
+			weibo.setEdgeRankValue(weiboIndex.getEdgeRank());
+			weibo.setSimilarity(weiboIndex.getSimilarity());
+			weibo.setHomogeneity(weibo.getHomogeneity());
+			weibo.setFamiliarity(weiboIndex.getFamilarity());
+			weibo.setTimeDecay(weibo.getTimeDecay());
+			weibo.setPopularity(weibo.getPopularity());
+			
+			System.out.println("Old data loaded");
+			
+			return true;
+		}
+	}
 
 	@SuppressWarnings("deprecation")
 	public static void main(String[] args) {
 		User rootUser = new UserNetwork().getRootUser();
 		List<User> users = new UserNetwork().getUserFocus(rootUser.getId());
 		
+		String path = args[0];
+		
+		
 		Calendar calendar = Calendar.getInstance();
 		calendar.set(Calendar.DAY_OF_MONTH, 1);
 		calendar.set(Calendar.MONTH, 3);
 		Date date = calendar.getTime();
 		
-		for (int i = 36; i != users.size(); i++) {
+		for (int i = 0; i != users.size(); i++) {
 			List<Weibo> weiboList = new UserNetwork().getUserAvailableWeibo(users.get(i).getId());
 			
 			Keyword userKeyword = new UserNetwork().getUserKeyword(users.get(i).getId());
@@ -86,35 +110,28 @@ public class MainCalc {
                     user.setTwitterRank(userTwitterRanks.get(user.getName()));
 		    		weiboList.get(j).setPublisher(user);
 		    		
-		    		weiboList.get(j).setHomogeneity(new HomogeneityParser().calcHomogeneity(users.get(i).getId(), user.getId()));
-		    		
-		    		//if (weiboList.get(j).isForwarded()) {
-		    		//	Weibo weibo = new WeiboNetwork().getWeiboForwardInfo(users.get(i).getId(), weiboList.get(j).getId());
-		    		//	
-		    		//	if (weibo == null)
-		    		//		weiboList.get(j).setPopularity(new PopularityParser().calcPopularity(weiboList.get(j).getRepostsCount(), weiboList.get(j).getCommentsCount(), weiboList.get(j).getAttitudesCount()));
-		    		//	else
-		    		//		weiboList.get(j).setPopularity(new PopularityParser().calcPopularity(weibo.getRepostsCount(), weibo.getCommentsCount(), weibo.getAttitudesCount(), weiboList.get(j).getRepostsCount(), weiboList.get(j).getCommentsCount(), weiboList.get(j).getAttitudesCount()));
-		    		//}
-		    		//else {
-		    		//	weiboList.get(j).setPopularity(new PopularityParser().calcPopularity(weiboList.get(j).getRepostsCount(), weiboList.get(j).getCommentsCount(), weiboList.get(j).getAttitudesCount()));
-		    		//}
+		    		if (!setWeiboIndex(weiboList.get(j))) {
+		    			System.out.println("Need to get weibo info");
+		    			
+		    			weiboList.get(j).setHomogeneity(new HomogeneityParser().calcHomogeneity(users.get(i).getId(), user.getId()));
 
-		    		weiboList.get(j).setTimeDecay(new TimeDecayParser().calcTimeDecay(weiboList.get(j).getCreatedAt()));
+		    			weiboList.get(j).setTimeDecay(new TimeDecayParser().calcTimeDecay(weiboList.get(j).getCreatedAt()));
 		    		
-		    		weiboList.get(j).setFamiliarity(new FamiliarityParser().calcFamiliarity(weiboList.get(j).isBiFollowing(), users.get(i), user));
+		    			weiboList.get(j).setFamiliarity(new FamiliarityParser().calcFamiliarity(weiboList.get(j).isBiFollowing(), users.get(i), user));
 		    		
-		    		Keyword keyword = userKeywords.get(user.getName());
+		    			Keyword keyword = userKeywords.get(user.getName());
 		    		
-		    		int length = userKeyword.getLength() > keyword.getLength() ? keyword.getLength() : userKeyword.getLength();
+		    			int length = userKeyword.getLength() > keyword.getLength() ? keyword.getLength() : userKeyword.getLength();
 		    		
-		    		length = length * 3;
+		    			length = length * 3;
 		    		
-		    		weiboList.get(j).setSimilarity(new SimilarityParser(length).calcSimilarity(userKeyword.getKeyWords(), keyword.getKeyWords()));
+		    			weiboList.get(j).setSimilarity(new SimilarityParser(length).calcSimilarity(userKeyword.getKeyWords(), keyword.getKeyWords()));
 
-		    		EdgeRankCalculator.getEdgeRank(weiboList.get(j));
-
-		    		System.out.println(isBiFollowed);
+		    			EdgeRankCalculator.getEdgeRank(weiboList.get(j));
+		    			
+		    			new WeiboNetwork().setWeiboIndex(weiboList.get(j));
+		    		}
+		    		
 		    		realWeiboList.add(weiboList.get(j));
 		    	}
 		    }
@@ -145,7 +162,7 @@ public class MainCalc {
 		    	WeiboComparatorViaSHTFP.S[j] = MathUtil.getS(indexArrays[j], WeiboComparatorViaSHTFP.AVG[j]);
 		    }
 		    
-		    FileWriter.writeUserReport("/Users/trinezealot/maggie/result", users.get(i), realWeiboList);
+		    FileWriter.writeUserReport(path, users.get(i), realWeiboList);
 		}
 	}
 }

@@ -19,7 +19,7 @@ public class WeiboComparatorViaSHTFP implements Comparator<Weibo>{
 	public static final int HWEIGHT = 1;
 	public static final int FWEIGHT = 1;
 	
-	public static final double[] K_FACTORS = new double[]{8.7f,6.5f,12.4f,5.2f,8.6f,};
+	public static final double[] K_FACTORS = new double[]{16.91f,1.00f,46.96f,-9.68f,16.61f,};
 	
 	public static final double[] K = new double[]{1, 1, 1, 1, 1};
 	

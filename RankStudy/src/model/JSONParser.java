@@ -81,6 +81,22 @@ public class JSONParser implements JSONConstants {
 		return twitterRankInfoList;
 	}
 	
+	public static WeiboIndex jsonToWeiboIndex(JSONObject json) {
+		try {
+			double similarity = json.getDouble(SIMILARITY);
+			double homogeneity = json.getDouble(HOMOGENEITY);
+			double familarity = json.getDouble(FAMILARITY);
+			double timeDecay = json.getDouble(TIME_DECAY);
+			double popularity = json.getDouble(POPULARITY);
+			double edgeRank = json.getDouble(EDGE_RANK);
+			
+			return new WeiboIndex(similarity, homogeneity, familarity, timeDecay, popularity, edgeRank);
+		} catch(Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
 	public static List<Weibo> arrayToWeiboList(JSONArray array) {
 		List<Weibo> weiboList = new ArrayList<Weibo>();
 		

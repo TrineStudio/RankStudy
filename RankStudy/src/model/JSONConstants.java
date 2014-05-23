@@ -23,4 +23,10 @@ public interface JSONConstants {
 	public static final String COUNT = "count";
 	public static final String KEYWORD = "keyword";
 	public static final String COUNTS = "counts";
+	public static final String SIMILARITY = "similarity";
+	public static final String HOMOGENEITY = "homogeneity";
+	public static final String FAMILARITY = "familarity";
+	public static final String TIME_DECAY = "time_decay";
+	public static final String POPULARITY = "popularity";
+	public static final String EDGE_RANK = "edge_rank";
 }

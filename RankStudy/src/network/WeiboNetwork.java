@@ -6,6 +6,7 @@ import java.util.List;
 import model.JSONParser;
 import model.User;
 import model.Weibo;
+import model.WeiboIndex;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -27,6 +28,30 @@ public class WeiboNetwork extends BaseNetwork{
 				return null;
 			}
 		}
+	}
+	
+	public void setWeiboIndex(Weibo weibo) {
+		String url = SET_WEIBO_INDEX + "?id=" + weibo.getId() + "&similarity=" + weibo.getSimilarity() + "&homogeneity=" +
+					 weibo.getHomogeneity() + "&familarity=" + weibo.getFamiliarity() + "&time_decay=" + weibo.getTimeDecay()
+					 + "&popularity=" + weibo.getPopularity() + "&edge_rank=" + weibo.getEdgeRankValue();
+		
+		sendGet(url);
+	}
+	
+	public WeiboIndex getWeiboIndex(int id) {
+		String url = GET_WEIBO_INDEX + "?id=" + id;
+		
+		String result = sendGet(url);
+		
+		if (result.indexOf("{") == -1)
+			return null;
+		else 
+			try {
+				return JSONParser.jsonToWeiboIndex(new JSONObject(result));
+			} catch (Exception e) {
+				e.printStackTrace();
+				return null;
+			}
 	}
 	
 	public List<User> getWeiboInteractionUsers(int weiboId) {

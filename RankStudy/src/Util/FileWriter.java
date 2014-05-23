@@ -43,10 +43,45 @@ public class FileWriter {
 	 				weibo.getTimeDecay() + "," + weibo.getFamiliarity() + "," + weibo.getPopularity() + "," +
 					weibo.getPublisher().getPageRankValue() + "," + weibo.getEdgeRankValue() + "," + weibo.getPublisher().getTwitterRank() + ",";
 			
-					writeContents[i] += weibo.caluclateFactors(NONE) + ",";
+					writeContents[i] += weibo.caluclateFactors(NONE, true) + ",";
 			
 			i++;
   		}
+		
+		
+		String[] contents = new String[realWeiboList.size()];
+		
+		i = 0;
+		
+		for (Weibo weibo: weiboList) {
+			contents[i] = user.getId() + "," + weibo.getPublisher().getId() + "," + weibo.getId() + "," + 
+					weibo.getCreatedAt() + ",";
+			
+					for (int j = 1; j != FACTORS.length; j++) {
+						contents[i] += weibo.caluclateFactors(FACTORS[j], true) + ",";
+					}
+			
+					for (int j = 1; j != FACTORS.length; j++) {
+						contents[i] += weibo.caluclateFactors(FACTORS[j], false) + ",";
+					}
+					
+			i++;
+		}
+
+        PrintWriter writer;
+		//try {
+		//	writer = new PrintWriter(folderLocation + "/" + user.getName() + "_procedure.csv", "UTF-8");
+		//	
+		//	writer.println("uid,author id,weibo id,time,normal popularity, normal time decay, normal familarity decay, normal homogeneity, normal similarity,popularity,time decay,familarity decay,homogeneity,similarity");
+		//	
+		//	for (int j = 0; j != contents.length; j++)
+		//		writer.println(contents[j]);
+
+		//	writer.close();
+		//	
+		//} catch (Exception e) {
+		//	e.printStackTrace();
+		//}
 		
 		Collections.sort(realWeiboList, new WeiboComparatorViaTime());
 
@@ -113,8 +148,7 @@ public class FileWriter {
         for (Weibo weibo : weiboList) {
         	writeContents[i++] += weibo.isCommented() + "," + weibo.isForwarded();
         }
-        
-        PrintWriter writer;
+
 		try {
 			writer = new PrintWriter(folderLocation + "/" + user.getName() + ".csv", "UTF-8");
 			
