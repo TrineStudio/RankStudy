@@ -36,7 +36,7 @@ public class PopularityParser {
 	}
 	
 	public double divideMax(int num, boolean isReposted){
-		
+			
 		if (!isReposted)
 			return (double)Math.log10(num + 1) / Math.log10(MAXPOP);
 		else

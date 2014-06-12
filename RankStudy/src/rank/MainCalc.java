@@ -37,10 +37,10 @@ public class MainCalc {
 		else {
 			weibo.setEdgeRankValue(weiboIndex.getEdgeRank());
 			weibo.setSimilarity(weiboIndex.getSimilarity());
-			weibo.setHomogeneity(weibo.getHomogeneity());
+			weibo.setHomogeneity(weiboIndex.getHomogeneity());
 			weibo.setFamiliarity(weiboIndex.getFamilarity());
-			weibo.setTimeDecay(weibo.getTimeDecay());
-			weibo.setPopularity(weibo.getPopularity());
+			weibo.setTimeDecay(weiboIndex.getTimeDecay());
+			weibo.setPopularity(weiboIndex.getPopularity());
 			
 			System.out.println("Old data loaded");
 			
@@ -53,7 +53,9 @@ public class MainCalc {
 		User rootUser = new UserNetwork().getRootUser();
 		List<User> users = new UserNetwork().getUserFocus(rootUser.getId());
 		
-		String path = args[0];
+//		String path = args[0];
+		
+		 String path = "/Users/trinezealot/maggie/result";
 		
 		
 		Calendar calendar = Calendar.getInstance();
@@ -79,7 +81,6 @@ public class MainCalc {
 		    	Date tempDate = new Date(weiboList.get(j).getCreatedAt());
 		    	
 		    	if (tempDate.getTime() > date.getTime()) {
-
 		    		User user = new UserNetwork().getUserInfo(weiboList.get(j).getUid());
 		    		
 		    		if (user == null)
@@ -126,11 +127,11 @@ public class MainCalc {
 		    			length = length * 3;
 		    		
 		    			weiboList.get(j).setSimilarity(new SimilarityParser(length).calcSimilarity(userKeyword.getKeyWords(), keyword.getKeyWords()));
-
-		    			EdgeRankCalculator.getEdgeRank(weiboList.get(j));
-		    			
-		    			new WeiboNetwork().setWeiboIndex(weiboList.get(j));
 		    		}
+
+		    		EdgeRankCalculator.getEdgeRank(weiboList.get(j), users.get(i).getId());
+		    			
+		    		new WeiboNetwork().setWeiboIndex(weiboList.get(j));
 		    		
 		    		realWeiboList.add(weiboList.get(j));
 		    	}

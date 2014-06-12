@@ -152,7 +152,7 @@ public class FileWriter {
 		try {
 			writer = new PrintWriter(folderLocation + "/" + user.getName() + ".csv", "UTF-8");
 			
-			writer.println("UserId,SenderId,WeiboId,Time,Similarity,Homogeneity,TimeDecay,Familiarity,Popularity,PageRank Value,EdgeRank Value,Twitter Rank Value,SHTFP Value,Time Position Value,PageRank Position Value,EdgeRank Position Value,Twitter Rank Position Value,SHTFP Normal Position Value,P Normal Position Value, T Normal Position Value,F Normal Position Value,H Normal Position Value,S Normal Position Value,SHTFP Position Value,P * " + K_FACTORS[POPULARITY] + " Position Value, T * " + K_FACTORS[TIME_DECAY] + " Position Value,F * " + K_FACTORS[FAMILIARITY] + " Position Value,H * " + K_FACTORS[HOMOGENEITY] + " Position Value,S * " + K_FACTORS[SIMILARITY] + " Position Value,has Commented,has reposted");
+			writer.println("UserId,SenderId,WeiboId,Time,Similarity,Homogeneity,TimeDecay,Familiarity,Popularity,PageRank Value,EdgeRank Value,Twitter Rank Value,SHTFP Value,Time Position Value,PageRank Position Value,EdgeRank Position Value,Twitter Rank Position Value,SHTFP Normal Position Value,P Normal Position Value, T Normal Position Value,F Normal Position Value,H Normal Position Value,S Normal Position Value,SHTFP Position Value,P Position Value, T Position Value,F Position Value,H Position Value,S Position Value,has Commented,has reposted");
 			
 			for (int j = 0; j != writeContents.length; j++) {
 				writer.println(writeContents[j]);
@@ -209,6 +209,6 @@ public class FileWriter {
 			i++;
 		}
 		
-		return (double)(rankValues / (double)(operationCount));
+		return (double)(rankValues / (double)operationCount);
 	}
 }

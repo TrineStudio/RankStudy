@@ -165,6 +165,8 @@ public class Weibo {
 		double[] indexes = getWeiboIndexes();
 		double factorResult = 0;
 		
+		int type = getWeiboType();
+		
 		for (int i = 0; i != indexes.length; i++) {
 			if (i != omit && omit != NONE)
 				continue;
@@ -176,7 +178,7 @@ public class Weibo {
 					tmp = (double)(indexes[i] - AVG[i]) / S[i];
 
 				if (!isNormal)
-					factorResult += K[i] * tmp * K_FACTORS[i];
+					factorResult += K[i] * tmp * K_FACTORS[type][i];
 				else
 					factorResult += K[i] * tmp;
 			}
@@ -211,5 +213,20 @@ public class Weibo {
 
 	public void setEdgeRankValue(double edgeRankValue) {
 		this.edgeRankValue = edgeRankValue;
+	}
+
+	public int getWeiboType() {
+		User user = getPublisher();
+		
+		double ratio = (double)user.getFollowersCount() / (double)user.getFriendsCount();
+		
+		if (ratio > 11000) {
+			return FAMOUS;
+		}
+		else if (ratio > 17 && ratio <= 11000) {
+			return KNOWN;
+		}
+		
+		return ORDINARY;
 	}
 }
